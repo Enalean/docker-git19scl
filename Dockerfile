@@ -18,15 +18,17 @@ RUN yum install -y rpm-build \
     'perl(Error)' \
     'perl(ExtUtils::MakeMaker)' \
     gcc \
-    wget; \
+    wget && \
     yum clean all
+
+RUN rpm --import 'https://www.redhat.com/security/fd431d51.txt'
 
 RUN useradd builder
 
 USER builder
 WORKDIR /home/builder
-RUN wget http://ftp.redhat.com/redhat/linux/enterprise/6Server/en/RHSCL/SRPMS/git19-1.2-4.el6.src.rpm
-RUN wget http://ftp.redhat.com/redhat/linux/enterprise/6Server/en/RHSCL/SRPMS/git19-git-1.9.4-2.el6.src.rpm
+RUN wget http://ftp.redhat.com/pub/redhat/linux/enterprise/6Server/en/RHSCL/SRPMS/git19-1.2-4.el6.src.rpm && rpm -K git19-1.2-4.el6.src.rpm
+RUN wget http://ftp.redhat.com/pub/redhat/linux/enterprise/6Server/en/RHSCL/SRPMS/git19-git-1.9.4-4.el6.1.src.rpm && rpm -K git19-git-1.9.4-4.el6.1.src.rpm
 
 RUN rpmbuild --rebuild git19-1.2-4.el6.src.rpm
 
@@ -37,4 +39,4 @@ RUN yum install -y tar
 
 USER builder
 WORKDIR /home/builder
-RUN rpmbuild --rebuild git19-git-1.9.4-2.el6.src.rpm
+RUN rpmbuild --rebuild git19-git-1.9.4-4.el6.1.src.rpm
